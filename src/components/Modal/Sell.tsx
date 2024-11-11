@@ -8,6 +8,7 @@ import { AuthContextType, userAuth } from "../Context/Auth";
 import { fetchFromFirestore, firestore } from "../Firebase/Firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { ItemType } from "../Pages/Home/Home";
+import toast, { Toaster } from 'react-hot-toast';
 
 interface SellProps {
     toggleModal: () => void;
@@ -65,6 +66,18 @@ const Sell = (props: SellProps) => {
                 return;
             }
         }
+
+        const trimmedTitle = title.trim();
+        const trimmedCategory = category.trim();
+        const trimmedPrice = price.trim();
+        const trimmedDescription = description.trim();
+
+        if (!trimmedTitle || !trimmedCategory || !trimmedPrice || !trimmedDescription) {
+            toast.error('All fields are required!');
+            setSubmiting(false);
+            return;
+        }
+
     
         try {
             await addDoc(collection(firestore, 'products'), {
@@ -141,10 +154,11 @@ const Sell = (props: SellProps) => {
                                 </div>
                         }
                     </form>
+                    <Toaster position="top-right" reverseOrder={false}/>
                 </div>
             </ModalBody>
         </Modal>
     );
-}
+};
 
 export default Sell;
